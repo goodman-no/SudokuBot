@@ -1,9 +1,5 @@
 import pygame as pg
-
-class Position:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+from util import Position, COLORS
 
 class Square:
     def __init__(self, pos, grid_pos, size):
@@ -21,16 +17,16 @@ class Square:
         self.number = n
 
         if n != None:
-            self.num_img = self.font.render(str(self.number), True, (0, 0, 0))
+            self.num_img = self.font.render(str(self.number), True, COLORS.BLACK)
         else:
             self.num_img = None
     
     def set_possibility(self, possible):
         if self.number != None:
             if possible:
-                self.num_img = self.font.render(str(self.number), True, (0, 255, 0))
+                self.num_img = self.font.render(str(self.number), True, COLORS.GREEN)
             else:
-                self.num_img = self.font.render(str(self.number), True, (255, 0, 0))
+                self.num_img = self.font.render(str(self.number), True, COLORS.RED)
     
     def draw_square(self, WIN):
         pg.draw.rect(WIN, (255, 255, 255), self.rect)
@@ -68,27 +64,25 @@ class Sudoku:
                 box_border = pg.Rect(self.pos.x + (x * size), self.pos.y + (y * size), size, size)
                 pg.draw.rect(WIN, (0, 0, 0), box_border, width=3)
 
-    
-    def update_puzzle(self, events):
+    def update_puzzle(self, event):
         
-        for event in events:
-            if event.type == pg.KEYDOWN:
-                if event.key in [pg.K_1, pg.K_2, pg.K_3, pg.K_4, pg.K_5, pg.K_6, pg.K_7, pg.K_8, pg.K_9]:
-                    self.selected_square.set_number(int(pg.key.name(event.key)))
-                if event.key in [pg.K_0]:
-                    self.selected_square.set_number(None)
-            elif event.type == pg.MOUSEBUTTONDOWN:
-                for row in self.squares:
-                    for square in row:
-                        if square.rect.collidepoint(pg.mouse.get_pos()):
-                            self.selected_square = square
+        if event.type == pg.KEYDOWN:
+            if event.key in [pg.K_1, pg.K_2, pg.K_3, pg.K_4, pg.K_5, pg.K_6, pg.K_7, pg.K_8, pg.K_9]:
+                self.selected_square.set_number(int(pg.key.name(event.key)))
+            if event.key in [pg.K_0]:
+                self.selected_square.set_number(None)
+        elif event.type == pg.MOUSEBUTTONDOWN:
+            for row in self.squares:
+                for square in row:
+                    if square.rect.collidepoint(pg.mouse.get_pos()):
+                        self.selected_square = square
 
         for row in self.squares:
             for square in row:
                 square.set_possibility(self.is_possible(square))
 
     def solve_puzzle(self):
-        pass
+        print("SOLVING PUZZLE")
 
     def get_row(self, square):
         return [s.number for s in self.squares[square.grid_pos.y]]
