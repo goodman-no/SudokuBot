@@ -12,6 +12,8 @@ class Square:
         self.num_img = None
 
         self.number = None
+
+        self.indexing_number = None
     
     def set_number(self, n):
         self.number = n
@@ -24,13 +26,13 @@ class Square:
     def set_possibility(self, possible):
         if self.number != None:
             if possible:
-                self.num_img = self.font.render(str(self.number), True, COLORS.GREEN)
+                self.num_img = self.font.render(str(self.number), True, COLORS.BLACK)
             else:
                 self.num_img = self.font.render(str(self.number), True, COLORS.RED)
     
     def draw_square(self, WIN):
-        pg.draw.rect(WIN, (255, 255, 255), self.rect)
-        pg.draw.rect(WIN, (0, 0 ,0), self.rect, width=1)
+        pg.draw.rect(WIN, COLORS.WHITE, self.rect)
+        pg.draw.rect(WIN, COLORS.BLACK, self.rect, width=1)
 
         if self.num_img != None:
             WIN.blit(self.num_img, (self.rendering_pos.x + (self.size / 3), self.rendering_pos.y + (self.size / 3)))
@@ -82,7 +84,37 @@ class Sudoku:
                 square.set_possibility(self.is_possible(square))
 
     def solve_puzzle(self):
-        print("SOLVING PUZZLE")
+        empty_squares = []
+
+        for row in self.squares:
+            for square in row:
+                if square.number == None:
+                    empty_squares.append(square)
+
+        backtrack_i = 0
+        while backtrack_i < len(empty_squares):
+
+            if empty_squares[backtrack_i].indexing_number == None:
+                empty_squares[backtrack_i].indexing_number = 1
+            else:
+                empty_squares[backtrack_i].indexing_number += 1
+            
+            if empty_squares[backtrack_i].indexing_number > 9:
+                if backtrack_i == 0:
+                    print(f"PUZZLE IMPOSSIBLE")
+                    break
+                else:
+                    s = empty_squares[backtrack_i]
+                    s.indexing_number = None
+                    self.squares[s.grid_pos.y][s.grid_pos.x].set_number(None)
+                    backtrack_i -= 1
+            else:
+                s = empty_squares[backtrack_i]
+                self.squares[s.grid_pos.y][s.grid_pos.x].set_number(empty_squares[backtrack_i].indexing_number)
+                print(f"{backtrack_i} : POSSIBLE? : {self.is_possible(self.squares[s.grid_pos.y][s.grid_pos.x])}")
+                if self.is_possible(self.squares[s.grid_pos.y][s.grid_pos.x]):
+                    backtrack_i += 1
+                    
 
     def get_row(self, square):
         return [s.number for s in self.squares[square.grid_pos.y]]
@@ -121,11 +153,16 @@ class Sudoku:
         if square.number == None:
             return None
         
-        #print(self.get_box(square))
-        
         return not (self.appears_twice(self.get_row(square), square.number) or 
                     self.appears_twice(self.get_column(square), square.number) or
                     self.appears_twice(self.get_box(square), square.number))
+    
+    def group_is_possible(self, squares):
+        for square in squares:
+            if not self.is_possible(square):
+                return False
+        
+        return True
     
     @staticmethod 
     def appears_twice(list, item):
