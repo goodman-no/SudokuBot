@@ -14,9 +14,13 @@ puz = Sudoku(Position(120, 120))
 sudoku_text = Text(ui_manager, Position(230, 60),
                    "Sudoku Solver",
                    font_color=COLORS.WHITE)
-solve_button = Button(ui_manager, Position(260, 525),
+solve_button = Button(ui_manager, Position(350, 525),
                       "SOLVE",
                       puz.solve_puzzle,
+                      font_color=COLORS.WHITE)
+clear_button = Button(ui_manager, Position(150, 525),
+                      "CLEAR",
+                      puz.clear_puzzle,
                       font_color=COLORS.WHITE)
 
 running = True

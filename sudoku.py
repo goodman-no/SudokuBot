@@ -83,12 +83,19 @@ class Sudoku:
             for square in row:
                 square.set_possibility(self.is_possible(square))
 
+    def clear_puzzle(self):
+        for row in self.squares:
+            for square in row:
+                square.set_number(None)
+                square.indexing_number = None
+
     def solve_puzzle(self):
         empty_squares = []
 
         for row in self.squares:
             for square in row:
                 if square.number == None:
+                    square.indexing_number = None
                     empty_squares.append(square)
 
         backtrack_i = 0
@@ -111,7 +118,6 @@ class Sudoku:
             else:
                 s = empty_squares[backtrack_i]
                 self.squares[s.grid_pos.y][s.grid_pos.x].set_number(empty_squares[backtrack_i].indexing_number)
-                print(f"{backtrack_i} : POSSIBLE? : {self.is_possible(self.squares[s.grid_pos.y][s.grid_pos.x])}")
                 if self.is_possible(self.squares[s.grid_pos.y][s.grid_pos.x]):
                     backtrack_i += 1
                     
@@ -156,14 +162,7 @@ class Sudoku:
         return not (self.appears_twice(self.get_row(square), square.number) or 
                     self.appears_twice(self.get_column(square), square.number) or
                     self.appears_twice(self.get_box(square), square.number))
-    
-    def group_is_possible(self, squares):
-        for square in squares:
-            if not self.is_possible(square):
-                return False
-        
-        return True
-    
+
     @staticmethod 
     def appears_twice(list, item):
         count = 0

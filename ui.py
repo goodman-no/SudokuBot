@@ -15,7 +15,8 @@ class UI_MANAGER:
 
 class UI:
     def __init__(self, MANAGER, pos, size):
-        MANAGER.elements.append(self)
+        self.MANAGER = MANAGER
+        self.MANAGER.elements.append(self)
         self.pos = pos
         self.size = size
         self.rect = pg.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y)
@@ -23,8 +24,14 @@ class UI:
     def draw(self, WIN):
         pass
 
-    def update(self, events):
+    def update(self, event):
         pass
+
+    def off(self):
+        self.MANAGER.elements.remove(self)
+    
+    def on(self):
+        self.MANAGER.elements.append(self)
 
 class Text(UI):
     def __init__(self, MANAGER, pos, text, font_size=36, font=None, font_color=COLORS.BLACK):
