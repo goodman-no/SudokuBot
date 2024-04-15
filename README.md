@@ -37,11 +37,13 @@ Package Requirements
 ----------------------------
 
 Pygame
+
 Python 3.11
 
 Authors 
 -----------------------
 
 Noah Goodman
+
 William Jappe
 
