@@ -33,4 +33,15 @@ When you want to solve the puzzle, click on the solve button. Remember that this
 
 Puzzle solved!
 
+Package Requirements
+----------------------------
+
+Pygame
+Python 3.11
+
+Authors 
+-----------------------
+
+Noah Goodman
+William Jappe
 
